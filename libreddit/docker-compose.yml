@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  libreddit:
+    image: spikecodes/libreddit:latest
+    restart: unless-stopped
+    networks:
+      - npm-network
+    environment:
+      - THEME=dracula
+      - SHOW_NSFW=on
+    container_name: "libreddit"
+    ports:
+      - 8080:8080
+
+networks:
+  npm-network:
+    external: true

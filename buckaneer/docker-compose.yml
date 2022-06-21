@@ -4,8 +4,14 @@ services:
   web:
     image: darkfoxio/buckaneer:latest
     restart: unless-stopped
+    networks:
+      - npm-network
     volumes:
       - /srv/buckaneer/data/:/data/
     container_name: "buckaneer"
     ports:
       - 5001:5000
+
+networks:
+  npm-network:
+    external: true
