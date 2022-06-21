@@ -7,8 +7,8 @@ services:
     networks:
       - npm-network
     environment:
-      - THEME=dracula
-      - SHOW_NSFW=on
+      - LIBREDDIT_DEFAULT_THEME=dracula
+      - LIBREDDIT_DEFAULT_SHOW_NSFW=on
     container_name: "libreddit"
     ports:
       - 8080:8080
