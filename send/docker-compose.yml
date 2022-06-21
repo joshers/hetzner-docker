@@ -1,0 +1,15 @@
+version: "3"
+services:
+  send:
+    image: mozilla/send:latest
+    links:
+      - redis
+    ports:
+      - "127.0.0.1:1443:1443"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    restart: unless-stopped
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
