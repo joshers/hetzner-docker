@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  web:
+    image: darkfoxio/buckaneer:latest
+    restart: unless-stopped
+    volumes:
+      - /srv/buckaneer/data/:/data/
+    container_name: "buckaneer"
+    ports:
+      - 5001:5000

@@ -1,0 +1,74 @@
+version: '3'
+volumes:
+  postgres_data: {}
+  app_data: {}
+  redis_data: {}
+services:
+  db:
+    image: 'postgres:12.2'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - '.env'
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: "10m"
+    restart: unless-stopped
+  redis:
+    image: 'redis:4.0-alpine'
+    command: redis-server
+    volumes:
+      - redis_data:/var/lib/redis/data
+    restart: unless-stopped
+  app:
+    image: hududocker/hudu:latest
+    env_file:
+      - '.env'
+    volumes:
+      - app_data:/var/www/hudu2/public/uploads/
+      - app_data:/var/www/hudu2/uploads/
+      - app_data:/var/lib/app/data
+    depends_on:
+      - db
+      - redis
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: "100m"
+    restart: unless-stopped
+  worker:
+    depends_on:
+      - db
+      - redis
+    image: hududocker/hudu:latest
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes:
+      - app_data:/var/www/hudu2/public/uploads/
+      - app_data:/var/www/hudu2/uploads/
+      - '.:/app'
+    env_file:
+      - '.env'
+    logging:
+      driver: "json-file"
+      options:
+          max-file: "5"
+          max-size: "100m"
+    restart: unless-stopped
+  nginx:
+    image: lscr.io/linuxserver/nginx
+    container_name: nginx
+    cap_add:
+      - NET_ADMIN
+    env_file:
+      - '.env'
+    depends_on:
+      - app
+    volumes:
+      - /var/www/hudu2/config:/config
+    ports:
+      - 8083:80
+      - 4433:443
+    restart: unless-stopped
