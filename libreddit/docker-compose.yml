@@ -1,17 +1,14 @@
 version: "3.8"
 
 services:
-  libreddit:
-    image: spikecodes/libreddit:latest
+  kuma:
+    image: louislam/uptime-kuma:latest
     restart: unless-stopped
     networks:
       - npm-network
-    environment:
-      - LIBREDDIT_DEFAULT_THEME=dracula
-      - LIBREDDIT_DEFAULT_SHOW_NSFW=on
-    container_name: "libreddit"
-    ports:
-      - 8080:8080
+    volumes:
+      - /srv/uptime-kuma:/app/data
+    container_name: "uptime-kuma"
 
 networks:
   npm-network:
